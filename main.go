@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/xml"
+	"io"
 	"log"
 	"math"
 	"os"
@@ -45,9 +46,18 @@ func (p1 Wpt) distTo(p2 Wpt) float64 {
 	return 6371E3 * c
 }
 
+func readGpx(reader io.Reader) (*Gpx, error) {
+	ans := new(Gpx)
+	err := xml.NewDecoder(reader).Decode(ans)
+	if err != nil {
+		return nil, err
+	}	
+	return ans, nil
+}
+
 func main() {
-	gpx := new(Gpx)
-	if err := xml.NewDecoder(os.Stdin).Decode(gpx); err != nil {
+	gpx, err := readGpx(os.Stdin)
+	if err != nil {
 		log.Fatal(err)
 	}
 	if len(gpx.Trk) != 1 || len(gpx.Trk[0].TrkSeg) != 1 {
