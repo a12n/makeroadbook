@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/xml"
 	"log"
+	"math"
 	"os"
 )
 
@@ -27,6 +28,21 @@ type Trk struct {
 type Gpx struct {
 	Wpt []Wpt `xml:"wpt"`
 	Trk []Trk `xml:"trk"`
+}
+
+func rad(degree float64) float64 {
+	return degree * math.Pi / 180
+}
+
+func (p1 Wpt) distTo(p2 Wpt) float64 {
+	// TODO: Use Vincenty formula?
+	lat1, lon1 := rad(p1.Lat), rad(p1.Lon)
+	lat2, lon2 := rad(p2.Lat), rad(p2.Lon)
+	diffLat, diffLon := lat2 - lat1, lon2 - lon1
+	sinLat, sinLon := math.Sin(diffLat / 2), math.Sin(diffLon / 2)
+	a := sinLat * sinLat + sinLon * sinLon * math.Cos(lat1) * math.Cos(lat2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1 - a))
+	return 6371E3 * c
 }
 
 func main() {
