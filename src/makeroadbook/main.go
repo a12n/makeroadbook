@@ -100,7 +100,7 @@ func main() {
 
 	for output.Len() > 0 {
 		entry := heap.Pop(output).(*outEntry)
-		fmt.Printf("%s  %s\n",
+		fmt.Printf("%s  %s\r\n",
 			strings.Replace(fmt.Sprintf("%05.1f", entry.dist / 1000), ".", ",", 1),
 			entry.desc)
 	}
