@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/heap"
+	"flag"
 	"fmt"
 	"gpx"
 	"log"
@@ -53,15 +54,22 @@ func distAlong(s *gpx.TrkSeg) []float64 {
 }
 
 func main() {
-	gpx, err := gpx.Read(os.Stdin)
+	flag.Parse()
+	var err error
+	var input *gpx.Gpx
+	if flag.NArg() > 0 {
+		input, err = gpx.ReadFile(flag.Arg(0))
+	} else {
+		input, err = gpx.Read(os.Stdin)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
-	if len(gpx.Trk) != 1 || len(gpx.Trk[0].TrkSeg) != 1 {
+	if len(input.Trk) != 1 || len(input.Trk[0].TrkSeg) != 1 {
 		log.Fatal("There must be exactly one track in the GPX file")
 	}
 
-	trk := gpx.Trk[0]
+	trk := input.Trk[0]
 	trkseg := trk.TrkSeg[0]
 
 	dist := distAlong(trkseg)
@@ -69,7 +77,7 @@ func main() {
 	output := &outQueue{}
 	heap.Init(output)
 
-	for _, wpt := range gpx.Wpt {
+	for _, wpt := range input.Wpt {
 		jMin := -1
 		xMin, aMin := 0.0, 0.0
 		for j := 0; j < len(trkseg.TrkPt) - 1; j++ {
