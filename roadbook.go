@@ -48,6 +48,14 @@ func FormatDist(dist float64) string {
 	return s
 }
 
+func FormatDuration(d time.Duration) string {
+	s := d.String()
+	s = strings.Replace(s, "h", "ч", 1)
+	s = strings.Replace(s, "m", "м", 1)
+	s = strings.Replace(s, "s", "с", 1)
+	return s
+}
+
 func SpeedRange(dist float64) (float64, float64) {
 	tolerance := 2.5 / 100
 	if dist < (200 + 200 * tolerance) {
@@ -136,8 +144,10 @@ func NewRoadBook(gpx *Gpx) (*RoadBook, error) {
 			FormatDist(rbk.Checkpoints[i].DistPrev)
 		rbk.Checkpoints[i].OpensAfter, rbk.Checkpoints[i].ClosesAfter =
 			CheckpointTimes(rbk.Checkpoints[i].Dist)
-		rbk.Checkpoints[i].OpensAfterStr = rbk.Checkpoints[i].OpensAfter.String()
-		rbk.Checkpoints[i].ClosesAfterStr = rbk.Checkpoints[i].ClosesAfter.String()
+		rbk.Checkpoints[i].OpensAfterStr =
+			FormatDuration(rbk.Checkpoints[i].OpensAfter)
+		rbk.Checkpoints[i].ClosesAfterStr =
+			FormatDuration(rbk.Checkpoints[i].ClosesAfter)
 	}
 
 	for i := 0; i < len(rbk.Waypoints); i++ {
