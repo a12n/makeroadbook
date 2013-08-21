@@ -1,5 +1,7 @@
 .PHONY: all clean rel
 
+SRCS = dist.go gpx.go main.go roadbook.go
+
 all: makeroadbook
 
 clean:
@@ -7,8 +9,8 @@ clean:
 
 rel: makeroadbook-linix-386
 
-makeroadbook: src/makeroadbook/main.go
-	GOPATH=$(PWD) go build makeroadbook
+makeroadbook: $(SRCS)
+	go build -o $@ $^
 
 makeroadbook-linix-386: makeroadbook
 	cp $< $@
