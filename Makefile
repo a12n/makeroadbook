@@ -1,17 +1,25 @@
-.PHONY: all clean rel
+.PHONY: all clean distclean rel
 
+GOHOSTARCH = $(shell go env GOHOSTARCH)
+GOHOSTOS = $(shell go env GOHOSTOS)
+
+BIN = makeroadbook
+REL = makeroadbook-$(GOHOSTOS)-$(GOHOSTARCH)
 SRCS = dist.go gpx.go main.go roadbook.go
 
-all: makeroadbook
+all: $(BIN)
 
 clean:
-	rm -f makeroadbook
+	rm -f $(BIN)
 
-rel: makeroadbook-linix-386
+distclean: clean
+	rm -f $(REL)
 
-makeroadbook: $(SRCS)
+rel: $(REL)
+
+$(BIN): $(SRCS)
 	go build -o $@ $^
 
-makeroadbook-linix-386: makeroadbook
+$(REL): $(BIN)
 	cp $< $@
 	strip $@
