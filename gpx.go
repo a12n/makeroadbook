@@ -1,11 +1,6 @@
-package gpx
+package main
 
-import (
-	"encoding/xml"
-	"io"
-	"os"
-	"time"
-)
+import "time"
 
 type Email struct {
 	Id string `xml:"id,attr"`
@@ -73,21 +68,4 @@ type Gpx struct {
 	Wpt []*Wpt `xml:"wpt"`
 	// Rte []*Rte `xml:"rte"`
 	Trk []*Trk `xml:"trk"`
-}
-
-func Read(r io.Reader) (*Gpx, error) {
-	ans := new(Gpx)
-	if err := xml.NewDecoder(r).Decode(ans); err != nil {
-		return nil, err
-	}
-	return ans, nil
-}
-
-func ReadFile(filename string) (*Gpx, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	return Read(f)
 }

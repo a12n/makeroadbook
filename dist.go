@@ -1,4 +1,4 @@
-package gpx
+package main
 
 import m "math"
 
@@ -51,4 +51,12 @@ func (p Wpt) TrackDist(pA, pB Wpt) (float64, float64) {
 	at := m.Asin(m.Sqrt(sd * sd - sx * sx) / m.Cos(xt))
 
 	return EarthRadius * xt, EarthRadius * at
+}
+
+func (s *TrkSeg) DistAlong() []float64 {
+	ans := make([]float64, len(s.TrkPt))
+	for i := 1; i < len(s.TrkPt); i++ {
+		ans[i] = ans[i - 1] + s.TrkPt[i - 1].DistTo(*s.TrkPt[i])
+	}
+	return ans
 }
