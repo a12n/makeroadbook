@@ -1,0 +1,4 @@
+{{range .Checkpoints}}
+{{.DistStr}}  {{printf "%-8s" .Name}}  {{printf "%-9s" .OpensAfterStr}}  {{printf "%-9s" .ClosesAfterStr}}{{end}}
+{{range .Waypoints}}
+{{.DistStr}}  {{.Desc}}{{end}}
