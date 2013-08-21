@@ -2,14 +2,18 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"sort"
+	"strings"
 	"time"
 )
 
 type Waypoint struct {
 	Dist float64
+	DistStr string
 	DistPrev float64
+	DistPrevStr string
 	Desc string
 }
 
@@ -37,6 +41,12 @@ type WaypointArray []Waypoint
 func (s WaypointArray) Len() int { return len(s) }
 func (s WaypointArray) Less(i, j int) bool { return s[i].Dist < s[j].Dist }
 func (s WaypointArray) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
+
+func FormatDist(dist float64) string {
+	s := fmt.Sprintf("%05.1f", dist)
+	s = strings.Replace(s, ".", ",", 1)
+	return s
+}
 
 func SpeedRange(dist float64) (float64, float64) {
 	tolerance := 2.5 / 100
@@ -96,6 +106,7 @@ func NewRoadBook(gpx *Gpx) (*RoadBook, error) {
 
 		wpt := Waypoint{}
 		wpt.Dist = (dist[jMin] + aMin) / 1000
+		wpt.DistStr = FormatDist(wpt.Dist)
 		if gpxWpt.Desc != nil {
 			wpt.Desc = *gpxWpt.Desc
 		} else if gpxWpt.Name != nil {
@@ -121,6 +132,8 @@ func NewRoadBook(gpx *Gpx) (*RoadBook, error) {
 			rbk.Checkpoints[i].DistPrev =
 				rbk.Checkpoints[i].Dist - rbk.Checkpoints[i - 1].Dist
 		}
+		rbk.Checkpoints[i].DistPrevStr =
+			FormatDist(rbk.Checkpoints[i].DistPrev)
 		rbk.Checkpoints[i].OpensAfter, rbk.Checkpoints[i].ClosesAfter =
 			CheckpointTimes(rbk.Checkpoints[i].Dist)
 		rbk.Checkpoints[i].OpensAfterStr = rbk.Checkpoints[i].OpensAfter.String()
@@ -132,6 +145,8 @@ func NewRoadBook(gpx *Gpx) (*RoadBook, error) {
 			rbk.Waypoints[i].DistPrev =
 				rbk.Waypoints[i].Dist - rbk.Waypoints[i - 1].Dist
 		}
+		rbk.Waypoints[i].DistPrevStr =
+			FormatDist(rbk.Waypoints[i].DistPrev)
 	}
 
 	return rbk, nil
