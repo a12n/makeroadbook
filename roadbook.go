@@ -16,10 +16,10 @@ type Waypoint struct {
 type Checkpoint struct {
 	Waypoint
 	Name string
-	StartTime time.Duration `json:"-"`
-	StartTimeStr string `json:"StartTime"`
-	EndTime time.Duration `json:"-"`
-	EndTimeStr string `json:"EndTime"`
+	OpensAfter time.Duration `json:"-"`
+	OpensAfterStr string `json:"OpensAfter"`
+	ClosesAfter time.Duration `json:"-"`
+	ClosesAfterStr string `json:"ClosesAfter"`
 }
 
 type RoadBook struct {
@@ -121,10 +121,10 @@ func NewRoadBook(gpx *Gpx) (*RoadBook, error) {
 			rbk.Checkpoints[i].DistPrev =
 				rbk.Checkpoints[i].Dist - rbk.Checkpoints[i - 1].Dist
 		}
-		rbk.Checkpoints[i].StartTime, rbk.Checkpoints[i].EndTime =
+		rbk.Checkpoints[i].OpensAfter, rbk.Checkpoints[i].ClosesAfter =
 			CheckpointTimes(rbk.Checkpoints[i].Dist)
-		rbk.Checkpoints[i].StartTimeStr = rbk.Checkpoints[i].StartTime.String()
-		rbk.Checkpoints[i].EndTimeStr = rbk.Checkpoints[i].EndTime.String()
+		rbk.Checkpoints[i].OpensAfterStr = rbk.Checkpoints[i].OpensAfter.String()
+		rbk.Checkpoints[i].ClosesAfterStr = rbk.Checkpoints[i].ClosesAfter.String()
 	}
 
 	for i := 0; i < len(rbk.Waypoints); i++ {
